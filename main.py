@@ -1,6 +1,24 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import scrolledtext
+from tkinter import scrolledtext, messagebox
+
+### === Menu Items Handlers === ###
+
+def add_files():
+    messagebox.showinfo("Add Files", "Functionality for adding files goes here")
+
+def view_files():
+    messagebox.showinfo("View Files", "Functionality for viewing files goes here")
+
+def close_app():
+    root.destroy()
+
+def about():
+    messagebox.showinfo("About", "This is a sample app created using Tkinter")
+
+def contact():
+    messagebox.showinfo("Contact", "You can reach us at contact@example.com")
+
 
 ### === Widget Event Handlers === ###
 
@@ -10,6 +28,15 @@ def send_btn_click():
 def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
     return "break"
+
+def vsb_chatbox_visibility(event):
+    xview = event.widget.xview()
+    yview = event.widget.yview()
+    if xview != (0.0, 1.0) or yview != (0.0, 1.0):
+        vsb_chatbox.grid()  # Show the vertical scrollbar
+    else:
+        vsb_chatbox.grid_remove()  # Hide the vertical scrollbar
+
 
 ### === Root Window === ###
 
@@ -30,9 +57,28 @@ y_position = (screen_height - window_height) // 2
 root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 # Use the "calm" theme
-style = ttk.Style()
-style.theme_use("clam")
+#style = ttk.Style()
+#style.theme_use("clam")
 
+### === Menu bar === ###
+
+menu_bar = tk.Menu(root)
+
+# Files menu
+files_menu = tk.Menu(menu_bar, tearoff=0)
+files_menu.add_command(label="Add Files", command=add_files)
+files_menu.add_command(label="View Files", command=view_files)
+files_menu.add_separator()
+files_menu.add_command(label="Close", command=close_app)
+menu_bar.add_cascade(label="Files", menu=files_menu)
+
+# Help menu
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="About", command=about)
+help_menu.add_command(label="Contact", command=contact)
+menu_bar.add_cascade(label="Help", menu=help_menu)
+
+root.config(menu=menu_bar)
 
 ## === Widgets === ###
 
@@ -54,7 +100,7 @@ txt_conv = tk.scrolledtext.ScrolledText(
 Fact = """A long long very very long long very verylong long very very long long very very sentence.
 A man can be arrested in Italy for wearing a skirt in public."""
 
-txt_conv.grid(row=0, column=0, columnspan=2, sticky="nsew")
+txt_conv.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
 # Insert The Fact.
 txt_conv.insert(tk.END, Fact)
@@ -66,15 +112,23 @@ txt_conv.config(
 )
 
 # Chat box
-txt_chatbox = tk.scrolledtext.ScrolledText(root, height=3, width=1)
+txt_chatbox = tk.Text(root, height=3, width=1)
 txt_chatbox.grid(row=1, column=0, padx=(8, 2), pady=8, sticky="nsew")
 
 # Bind Ctrl+A to select all text
 txt_chatbox.bind("<Control-a>", chatbox_select_all)
 
+# Chatbox Scrollbar
+vsb_chatbox= ttk.Scrollbar(root, orient='vertical', command=txt_chatbox.yview)
+vsb_chatbox.grid(row=1, column=1, padx=(0, 2), pady=8, sticky="ns")
+vsb_chatbox.grid_remove()  # Hide the scrollbar initially
+
+txt_chatbox['yscrollcommand'] = vsb_chatbox.set
+txt_chatbox.bind("<KeyRelease>", vsb_chatbox_visibility)
+
 # Send Button
 btn_send = ttk.Button(root, text="Send", command=send_btn_click)
-btn_send.grid(row=1, column=1, padx=(2, 8), pady=8, sticky="nsew")
+btn_send.grid(row=1, column=2, padx=(2, 8), pady=8, sticky="nsew")
 
 
 ### === Grid Configuration === ###
@@ -82,6 +136,7 @@ btn_send.grid(row=1, column=1, padx=(2, 8), pady=8, sticky="nsew")
 # Set column weights to make them resize proportionally
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=0)
+root.grid_columnconfigure(2, weight=0)
 
 # Configure row 0 to expand vertically
 root.grid_rowconfigure(0, weight=1)
