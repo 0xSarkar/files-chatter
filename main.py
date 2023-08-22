@@ -23,13 +23,16 @@ def contact():
 
 ### === Widget Event Handlers === ###
 
-def send_msg(vsb_conv, txt_conv):
+def send_msg():
     user_msg = txt_chatbox.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
-    vsb_visibility(vsb_conv, txt_conv)
     txt_chatbox.delete("1.0", tk.END)  # Clear the chatbox
+
+    # update scrollbars of conv and chatbox
+    vsb_visibility(vsb_conv, txt_conv)
+    vsb_visibility(vsb_chatbox, txt_chatbox)
 
 def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
@@ -102,7 +105,7 @@ txt_conv = tk.Text(
     highlightthickness=0,  # Remove the focus border
     bd=0,  # Remove the border
     relief=tk.FLAT,  # Set the relief to flat
-    padx=8,
+    padx=12,
     pady=6,
 )
  
@@ -139,7 +142,15 @@ frame_conv.grid_rowconfigure(0, weight=1)
 
 frame_chat = ttk.Frame(root)
 
-txt_chatbox = tk.Text(frame_chat, height=3, width=1)
+txt_chatbox = tk.Text(
+    frame_chat,
+    wrap=tk.WORD, 
+    height=3, 
+    width=1,
+    spacing1=8,
+    spacing2=4,
+    padx=4
+)
 txt_chatbox.grid(row=0, column=0, padx=(8, 2), pady=8, sticky="nsew")
 
 # Bind Ctrl+A to select all text
@@ -154,7 +165,7 @@ txt_chatbox['yscrollcommand'] = vsb_chatbox.set
 txt_chatbox.bind("<KeyRelease>", partial(vsb_visibility, vsb_chatbox, txt_chatbox))
 
 # Send Button
-btn_send = ttk.Button(frame_chat, text="Send", command=partial(send_msg, vsb_conv, txt_conv))
+btn_send = ttk.Button(frame_chat, text="Send", command=send_msg)
 btn_send.grid(row=0, column=2, padx=(2, 8), pady=8, sticky="nsew")
 
 frame_chat.grid(row=1, column=0, sticky="nsew")
