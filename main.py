@@ -23,16 +23,21 @@ def contact():
 
 ### === Widget Event Handlers === ###
 
-def send_btn_click():
-    print("Button clicked!")
+def send_msg(vsb_conv, txt_conv):
+    user_msg = txt_chatbox.get("1.0", tk.END)
+    txt_conv.config(state=tk.NORMAL)
+    txt_conv.insert(tk.END, user_msg)
+    txt_conv.config(state=tk.DISABLED)
+    vsb_visibility(vsb_conv, txt_conv)
+    txt_chatbox.delete("1.0", tk.END)  # Clear the chatbox
 
 def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
     return "break"
 
-def vsb_visibility(vsb_widget, event):
-    xview = event.widget.xview()
-    yview = event.widget.yview()
+def vsb_visibility(vsb_widget, txt_widget, event=None):
+    xview = txt_widget.xview()
+    yview = txt_widget.yview()
     if xview != (0.0, 1.0) or yview != (0.0, 1.0):
         vsb_widget.grid()  # Show the vertical scrollbar
     else:
@@ -109,11 +114,12 @@ txt_conv.grid(row=0, column=0, sticky="nsew")
 # Insert The Fact.
 txt_conv.insert(tk.END, Fact)
 
-vsb_conv= ttk.Scrollbar(root, orient='vertical', command=txt_conv.yview)
+vsb_conv= ttk.Scrollbar(frame_conv, orient='vertical', command=txt_conv.yview)
 vsb_conv.grid(row=0, column=1, sticky="ns")
-#vsb_conv.grid_remove()  # Hide the scrollbar initially
-#txt_conv['yscrollcommand'] = vsb_conv.set
-#txt_conv.bind("<KeyRelease>", partial(vsb_visibility, vsb_conv))
+vsb_conv.grid_remove()  # Hide the scrollbar initially
+
+txt_conv['yscrollcommand'] = vsb_conv.set
+txt_conv.bind("<KeyRelease>", partial(vsb_visibility, vsb_conv, txt_conv))
 
 txt_conv.config(
     state=tk.DISABLED,
@@ -145,10 +151,10 @@ vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
 vsb_chatbox.grid_remove()  # Hide the scrollbar initially
 
 txt_chatbox['yscrollcommand'] = vsb_chatbox.set
-txt_chatbox.bind("<KeyRelease>", partial(vsb_visibility, vsb_chatbox))
+txt_chatbox.bind("<KeyRelease>", partial(vsb_visibility, vsb_chatbox, txt_chatbox))
 
 # Send Button
-btn_send = ttk.Button(frame_chat, text="Send", command=send_btn_click)
+btn_send = ttk.Button(frame_chat, text="Send", command=partial(send_msg, vsb_conv, txt_conv))
 btn_send.grid(row=0, column=2, padx=(2, 8), pady=8, sticky="nsew")
 
 frame_chat.grid(row=1, column=0, sticky="nsew")
