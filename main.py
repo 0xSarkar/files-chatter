@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import scrolledtext, messagebox
+from tkinter import messagebox
+from functools import partial
 
 ### === Menu Items Handlers === ###
 
@@ -29,13 +30,13 @@ def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
     return "break"
 
-def vsb_chatbox_visibility(event):
+def vsb_visibility(vsb_widget, event):
     xview = event.widget.xview()
     yview = event.widget.yview()
     if xview != (0.0, 1.0) or yview != (0.0, 1.0):
-        vsb_chatbox.grid()  # Show the vertical scrollbar
+        vsb_widget.grid()  # Show the vertical scrollbar
     else:
-        vsb_chatbox.grid_remove()  # Hide the vertical scrollbar
+        vsb_widget.grid_remove()  # Hide the vertical scrollbar
 
 
 ### === Root Window === ###
@@ -111,6 +112,8 @@ txt_conv.insert(tk.END, Fact)
 vsb_conv= ttk.Scrollbar(root, orient='vertical', command=txt_conv.yview)
 vsb_conv.grid(row=0, column=1, sticky="ns")
 #vsb_conv.grid_remove()  # Hide the scrollbar initially
+#txt_conv['yscrollcommand'] = vsb_conv.set
+#txt_conv.bind("<KeyRelease>", partial(vsb_visibility, vsb_conv))
 
 txt_conv.config(
     state=tk.DISABLED,
@@ -142,7 +145,7 @@ vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
 vsb_chatbox.grid_remove()  # Hide the scrollbar initially
 
 txt_chatbox['yscrollcommand'] = vsb_chatbox.set
-txt_chatbox.bind("<KeyRelease>", vsb_chatbox_visibility)
+txt_chatbox.bind("<KeyRelease>", partial(vsb_visibility, vsb_chatbox))
 
 # Send Button
 btn_send = ttk.Button(frame_chat, text="Send", command=send_btn_click)
