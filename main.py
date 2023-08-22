@@ -80,11 +80,14 @@ menu_bar.add_cascade(label="Help", menu=help_menu)
 
 root.config(menu=menu_bar)
 
-## === Widgets === ###
+## === Conversation Area Widgets === ###
+
+# Frame for Conversation Text
+frame_conv = ttk.Frame(root)
 
 # Conversation Text
-txt_conv = tk.scrolledtext.ScrolledText(
-    root,
+txt_conv = tk.Text(
+    frame_conv,
     height=5,
     width=52,
     wrap=tk.WORD,
@@ -100,10 +103,14 @@ txt_conv = tk.scrolledtext.ScrolledText(
 Fact = """A long long very very long long very verylong long very very long long very very sentence.
 A man can be arrested in Italy for wearing a skirt in public."""
 
-txt_conv.grid(row=0, column=0, columnspan=3, sticky="nsew")
+txt_conv.grid(row=0, column=0, sticky="nsew")
 
 # Insert The Fact.
 txt_conv.insert(tk.END, Fact)
+
+vsb_conv= ttk.Scrollbar(root, orient='vertical', command=txt_conv.yview)
+vsb_conv.grid(row=0, column=1, sticky="ns")
+#vsb_conv.grid_remove()  # Hide the scrollbar initially
 
 txt_conv.config(
     state=tk.DISABLED,
@@ -111,35 +118,50 @@ txt_conv.config(
     inactiveselectbackground="lightblue",
 )
 
-# Chat box
-txt_chatbox = tk.Text(root, height=3, width=1)
-txt_chatbox.grid(row=1, column=0, padx=(8, 2), pady=8, sticky="nsew")
+frame_conv.grid(row=0, column=0, sticky="nsew")
+
+# Conversation frame grid configuration
+frame_conv.grid_columnconfigure(0, weight=1)
+frame_conv.grid_columnconfigure(1, weight=0)
+frame_conv.grid_rowconfigure(0, weight=1)
+
+
+### === Chatbox Widgets === ###
+
+frame_chat = ttk.Frame(root)
+
+txt_chatbox = tk.Text(frame_chat, height=3, width=1)
+txt_chatbox.grid(row=0, column=0, padx=(8, 2), pady=8, sticky="nsew")
 
 # Bind Ctrl+A to select all text
 txt_chatbox.bind("<Control-a>", chatbox_select_all)
 
 # Chatbox Scrollbar
-vsb_chatbox= ttk.Scrollbar(root, orient='vertical', command=txt_chatbox.yview)
-vsb_chatbox.grid(row=1, column=1, padx=(0, 2), pady=8, sticky="ns")
+vsb_chatbox= ttk.Scrollbar(frame_chat, orient='vertical', command=txt_chatbox.yview)
+vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
 vsb_chatbox.grid_remove()  # Hide the scrollbar initially
 
 txt_chatbox['yscrollcommand'] = vsb_chatbox.set
 txt_chatbox.bind("<KeyRelease>", vsb_chatbox_visibility)
 
 # Send Button
-btn_send = ttk.Button(root, text="Send", command=send_btn_click)
-btn_send.grid(row=1, column=2, padx=(2, 8), pady=8, sticky="nsew")
+btn_send = ttk.Button(frame_chat, text="Send", command=send_btn_click)
+btn_send.grid(row=0, column=2, padx=(2, 8), pady=8, sticky="nsew")
+
+frame_chat.grid(row=1, column=0, sticky="nsew")
+
+# Chat frame grid configuration
+frame_chat.grid_columnconfigure(0, weight=1)
+frame_chat.grid_columnconfigure(1, weight=0)
+frame_chat.grid_columnconfigure(2, weight=0)
 
 
-### === Grid Configuration === ###
+### === Root Grid Configuration === ###
 
 # Set column weights to make them resize proportionally
 root.grid_columnconfigure(0, weight=1)
-root.grid_columnconfigure(1, weight=0)
-root.grid_columnconfigure(2, weight=0)
-
-# Configure row 0 to expand vertically
 root.grid_rowconfigure(0, weight=1)
+root.grid_rowconfigure(1, weight=0)
 
 # Start the main event loop
 root.mainloop()
