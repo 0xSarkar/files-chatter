@@ -23,7 +23,7 @@ def contact():
 
 ### === Widget Event Handlers === ###
 
-def send_msg():
+def send_msg(event = None):
     user_msg = txt_chatbox.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
     txt_conv.insert(tk.END, user_msg)
@@ -34,9 +34,20 @@ def send_msg():
     vsb_visibility(vsb_conv, txt_conv)
     vsb_visibility(vsb_chatbox, txt_chatbox)
 
+    return "break"
+
 def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
     return "break"
+
+def chatbox_update(event):
+    print(event.state)
+    vsb_visibility(vsb_chatbox, txt_chatbox)
+
+
+def handle_tab(event):
+    event.widget.tk_focusNext().focus()
+    return "break"  # Prevent default tab behavior
 
 def vsb_visibility(vsb_widget, txt_widget, event=None):
     xview = txt_widget.xview()
@@ -108,14 +119,23 @@ txt_conv = tk.Text(
     padx=12,
     pady=6,
 )
- 
-Fact = """A long long very very long long very verylong long very very long long very very sentence.
-A man can be arrested in Italy for wearing a skirt in public."""
 
 txt_conv.grid(row=0, column=0, sticky="nsew")
 
-# Insert The Fact.
-txt_conv.insert(tk.END, Fact)
+txt_conv_font = ("Arial", 12)
+txt_conv.configure(font=txt_conv_font)
+
+first_bot_msg = """<strong>Bot:</strong>
+Hi! 
+- You can add new files to this chat by clicking on Files -> Add Files menu placed at the top left corner.
+- You can start a new chat by clicking on Chats -> New Chat
+- Type your messages in the text box at the bottom. Hit enter to send message or shift+enter to add a new line to your message.
+"""
+txt_conv.insert(tk.END, first_bot_msg)
+
+txt_conv.tag_configure("boldtxt", font=("Helvetica", 12, "bold"))
+
+txt_conv.tag_add("boldtxt","1.0",f"1.0+{len('<strong>Bot:</strong>')}c")
 
 vsb_conv= ttk.Scrollbar(frame_conv, orient='vertical', command=txt_conv.yview)
 vsb_conv.grid(row=0, column=1, sticky="ns")
@@ -162,11 +182,15 @@ vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
 vsb_chatbox.grid_remove()  # Hide the scrollbar initially
 
 txt_chatbox['yscrollcommand'] = vsb_chatbox.set
-txt_chatbox.bind("<KeyRelease>", partial(vsb_visibility, vsb_chatbox, txt_chatbox))
+txt_chatbox.bind("<KeyRelease>", chatbox_update)
+txt_chatbox.bind("<Tab>", handle_tab)
+#txt_chatbox.bind("<Return>", lambda event: print("boo") if(event.state == 1) else send_msg())
 
 # Send Button
 btn_send = ttk.Button(frame_chat, text="Send", command=send_msg)
 btn_send.grid(row=0, column=2, padx=(2, 8), pady=8, sticky="nsew")
+
+btn_send.bind("<Return>", send_msg)
 
 frame_chat.grid(row=1, column=0, sticky="nsew")
 
