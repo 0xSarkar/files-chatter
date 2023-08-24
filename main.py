@@ -24,6 +24,8 @@ def contact():
 ### === Widget Event Handlers === ###
 
 def send_msg(event = None):
+    global txt_chatbox
+    global txt_conv
     user_msg = txt_chatbox.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
     txt_conv.insert(tk.END, user_msg)
@@ -40,9 +42,24 @@ def chatbox_select_all(event):
     txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
     return "break"
 
-def chatbox_update(event):
-    print(event.state)
+def chatbox_key_release(event):
     vsb_visibility(vsb_chatbox, txt_chatbox)
+
+def set_chatbox_shift_pressed(value):
+    global chatbox_shift_pressed
+    chatbox_shift_pressed = value
+    print("Shift key is", "pressed" if value else "released")
+
+def chatbox_handle_return(event):
+    global chatbox_shift_pressed
+    global txt_chatbox
+    
+    if(chatbox_shift_pressed):
+        txt_chatbox.insert(tk.INSERT, "\n")
+    else:
+        send_msg()
+
+    return "break"
 
 def handle_tab(event):
     event.widget.tk_focusNext().focus()
@@ -187,10 +204,17 @@ vsb_chatbox= ttk.Scrollbar(frame_chat, orient='vertical', command=txt_chatbox.yv
 vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
 vsb_chatbox.grid_remove()  # Hide the scrollbar initially
 
+chatbox_shift_pressed = 0
 txt_chatbox['yscrollcommand'] = vsb_chatbox.set
-txt_chatbox.bind("<KeyRelease>", chatbox_update)
+txt_chatbox.bind("<KeyRelease>", chatbox_key_release)
+
+txt_chatbox.bind("<KeyPress-Shift_L>", lambda event: set_chatbox_shift_pressed(1))
+txt_chatbox.bind("<KeyPress-Shift_R>", lambda event: set_chatbox_shift_pressed(1))
+txt_chatbox.bind("<KeyRelease-Shift_L>", lambda event: set_chatbox_shift_pressed(0))
+txt_chatbox.bind("<KeyRelease-Shift_R>", lambda event: set_chatbox_shift_pressed(0))
+
 txt_chatbox.bind("<Tab>", handle_tab)
-#txt_chatbox.bind("<Return>", lambda event: print("boo") if(event.state == 1) else send_msg())
+txt_chatbox.bind("<Return>", chatbox_handle_return)
 
 # Send Button
 btn_send = ttk.Button(frame_chat, text="Send", command=send_msg)
