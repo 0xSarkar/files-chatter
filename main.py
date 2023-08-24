@@ -44,7 +44,6 @@ def chatbox_update(event):
     print(event.state)
     vsb_visibility(vsb_chatbox, txt_chatbox)
 
-
 def handle_tab(event):
     event.widget.tk_focusNext().focus()
     return "break"  # Prevent default tab behavior
@@ -56,8 +55,7 @@ def vsb_visibility(vsb_widget, txt_widget, event=None):
         vsb_widget.grid()  # Show the vertical scrollbar
     else:
         vsb_widget.grid_remove()  # Hide the vertical scrollbar
-
-
+ 
 ### === Root Window === ###
 
 # Create the main application window
@@ -125,17 +123,18 @@ txt_conv.grid(row=0, column=0, sticky="nsew")
 txt_conv_font = ("Arial", 12)
 txt_conv.configure(font=txt_conv_font)
 
-first_bot_msg = """<strong>Bot:</strong>
-Hi! 
+first_bot_msg = """Hi! 
 - You can add new files to this chat by clicking on Files -> Add Files menu placed at the top left corner.
 - You can start a new chat by clicking on Chats -> New Chat
 - Type your messages in the text box at the bottom. Hit enter to send message or shift+enter to add a new line to your message.
 """
-txt_conv.insert(tk.END, first_bot_msg)
 
-txt_conv.tag_configure("boldtxt", font=("Helvetica", 12, "bold"))
+bot_name = "Bot:\n"
+user_name = "User:\n"
 
-txt_conv.tag_add("boldtxt","1.0",f"1.0+{len('<strong>Bot:</strong>')}c")
+txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
+txt_conv.insert(tk.INSERT, bot_name, "bold")
+txt_conv.insert(tk.INSERT, first_bot_msg)
 
 vsb_conv= ttk.Scrollbar(frame_conv, orient='vertical', command=txt_conv.yview)
 vsb_conv.grid(row=0, column=1, sticky="ns")
