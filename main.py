@@ -90,6 +90,13 @@ files_menu.add_separator()
 files_menu.add_command(label="Close", command=close_app)
 menu_bar.add_cascade(label="Files", menu=files_menu)
 
+# Chats menu
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="New Chat", command=about)
+help_menu.add_command(label="Open Chat", command=about)
+help_menu.add_command(label="Save Chat", command=contact)
+menu_bar.add_cascade(label="Chats", menu=help_menu)
+
 # Help menu
 help_menu = tk.Menu(menu_bar, tearoff=0)
 help_menu.add_command(label="About", command=about)
