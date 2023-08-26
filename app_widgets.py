@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 from functools import partial
+
+from custom_widgets.advanced_text import AdvancedText
 
 txt_chatbox = None
 txt_conv = None
@@ -163,10 +164,23 @@ def create_widgets(root):
 
     frame_chat.grid(row=1, column=0, sticky="nsew")
 
+
+    # Testing Advanced Text custom widget
+    advanced_text = AdvancedText(frame_chat, default="Hello, this is some text.\n", enter_callback=lambda: print("Yeee!"), enter_clear=True)
+    advanced_text.grid(row=1, column=0, columnspan=3)
+
+    advanced_text.insert(tk.END, "Falana is not Dhikana.\n")
+
+    advanced_text_TW = advanced_text.get_text_widget()
+    advanced_text_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
+    advanced_text.insert(tk.INSERT, bot_name, "bold")
+
     # Chat frame grid configuration
     frame_chat.grid_columnconfigure(0, weight=1)
     frame_chat.grid_columnconfigure(1, weight=0)
     frame_chat.grid_columnconfigure(2, weight=0)
+    frame_chat.grid_rowconfigure(0, weight=0)
+    frame_chat.grid_rowconfigure(1, weight=0)
 
 
     ### === Root Grid Configuration === ###

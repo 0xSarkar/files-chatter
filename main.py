@@ -6,7 +6,6 @@ from functools import partial
 from app_menus import create_menu
 from app_widgets import create_widgets
 
-
 def main():
     ### === Root Window === ###
 

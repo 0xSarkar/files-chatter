@@ -40,5 +40,4 @@ def create_menu(root):
     help_menu.add_command(label="Contact", command=contact)
     menu_bar.add_cascade(label="Help", menu=help_menu)
 
-
     root.config(menu=menu_bar)
