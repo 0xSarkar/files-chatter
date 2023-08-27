@@ -119,69 +119,28 @@ def create_widgets(root):
 
     frame_chat = ttk.Frame(root)
 
-    global txt_chatbox
-    txt_chatbox= tk.Text(
-        frame_chat,
-        wrap=tk.WORD, 
-        height=3, 
-        width=1,
-        spacing1=8,
-        spacing2=4,
-        padx=4
-    )
-    txt_chatbox.grid(row=0, column=0, padx=(8, 2), pady=8, sticky="nsew")
-
-    # Bind Ctrl+A to select all text
-    txt_chatbox.bind("<Control-a>", chatbox_select_all)
-
-    # Chatbox Scrollbar
-    global vsb_chatbox
-    vsb_chatbox = ttk.Scrollbar(frame_chat, orient='vertical', command=txt_chatbox.yview)
-    vsb_chatbox.grid(row=0, column=1, padx=(0, 2), pady=8, sticky="ns")
-    vsb_chatbox.grid_remove()  # Hide the scrollbar initially
-
-    txt_chatbox['yscrollcommand'] = vsb_chatbox.set
-    txt_chatbox.bind("<KeyRelease>", partial(chatbox_key_release, vsb_chatbox, txt_chatbox))
-
-    txt_chatbox.bind("<KeyPress-Shift_L>", lambda event: set_chatbox_shift_pressed(1))
-    txt_chatbox.bind("<KeyPress-Shift_R>", lambda event: set_chatbox_shift_pressed(1))
-    txt_chatbox.bind("<KeyRelease-Shift_L>", lambda event: set_chatbox_shift_pressed(0))
-    txt_chatbox.bind("<KeyRelease-Shift_R>", lambda event: set_chatbox_shift_pressed(0))
-
-    txt_chatbox.bind("<Tab>", handle_tab)
-    txt_chatbox.bind("<Return>", chatbox_handle_return)
-
-    # Send Button
-    btn_send = ttk.Button(frame_chat, text="Send", command=send_msg)
-    btn_send.grid(row=0, column=2, padx=(2, 8), pady=8, sticky="nsew")
-
-    btn_send.bind("<Return>", send_msg)
-
-    frame_chat.grid(row=1, column=0, sticky="nsew")
-
-
     # Testing Advanced Text custom widget
-    advanced_text = AdvancedText(
+    chatbox_adtxt = AdvancedText(
         frame_chat,
-        default="Hello, this is some text.\n", 
+        default="Hello, this is some text.", 
         enter_callback=send_msg,
         callback_args=(None, txt_conv), 
         enter_clear=True
     )
-    advanced_text.grid(row=1, column=0, columnspan=3, padx=4, pady=8)
+    chatbox_adtxt.grid(row=1, column=0, columnspan=3, padx=6, pady=8)
 
-    advanced_text.insert(tk.END, "Falana is not Dhikana.\n")
+    chatbox_adtxt.insert(tk.END, "Falana is not Dhikana.\n")
 
-    advanced_text_TW = advanced_text.get_text_widget()
-    advanced_text_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    advanced_text.insert(tk.INSERT, bot_name, "bold")
+    chatbox_adtxt_TW = chatbox_adtxt.get_text_widget()
+    chatbox_adtxt_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
+    chatbox_adtxt.insert(tk.INSERT, bot_name, "bold")
+    
+    frame_chat.grid(row=1, column=0, sticky="nsew")
+
 
     # Chat frame grid configuration
     frame_chat.grid_columnconfigure(0, weight=1)
-    frame_chat.grid_columnconfigure(1, weight=0)
-    frame_chat.grid_columnconfigure(2, weight=0)
     frame_chat.grid_rowconfigure(0, weight=0)
-    frame_chat.grid_rowconfigure(1, weight=0)
 
 
     ### === Root Grid Configuration === ###
