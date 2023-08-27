@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 
 class AdvancedText(tk.Frame):
-    def __init__(self, parent, default="", height = 3, enter_callback=None, enter_clear=False):
+    def __init__(self, parent, default="", height = 3, enter_callback=None, callback_args=None, enter_clear=False):
         tk.Frame.__init__(self, parent)
 
         self.shift_pressed = False
         self.enter_callback = enter_callback
+        self.callback_args = callback_args
         self.enter_clear = enter_clear
 
         self.txt = tk.Text(
@@ -61,8 +62,8 @@ class AdvancedText(tk.Frame):
                 self.insert(tk.INSERT, "\n")
             else:
                 # call the callback if just enter
-                self.enter_callback()
-
+                self.enter_callback(self, *self.callback_args) if self.callback_args else self.enter_callback(self)
+                    
         if self.enter_clear and not self.shift_pressed:
             self.txt.delete("1.0", tk.END)  # Clear all text
 

@@ -12,16 +12,11 @@ chatbox_shift_pressed = 0
 
 ### === Widget Event Handlers === ###
 
-def send_msg(event = None):
-    user_msg = txt_chatbox.get("1.0", tk.END)
+def send_msg(caller=None, event=None, txt_conv=None, txt_chatbox=None):
+    user_msg = caller.txt.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
-    txt_chatbox.delete("1.0", tk.END)  # Clear the chatbox
-
-    # update scrollbars of conv and chatbox
-    vsb_visibility(vsb_conv, txt_conv)
-    vsb_visibility(vsb_chatbox, txt_chatbox)
 
     return "break"
 
@@ -166,8 +161,14 @@ def create_widgets(root):
 
 
     # Testing Advanced Text custom widget
-    advanced_text = AdvancedText(frame_chat, default="Hello, this is some text.\n", enter_callback=lambda: print("Yeee!"), enter_clear=True)
-    advanced_text.grid(row=1, column=0, columnspan=3)
+    advanced_text = AdvancedText(
+        frame_chat,
+        default="Hello, this is some text.\n", 
+        enter_callback=send_msg,
+        callback_args=(None, txt_conv), 
+        enter_clear=True
+    )
+    advanced_text.grid(row=1, column=0, columnspan=3, padx=4, pady=8)
 
     advanced_text.insert(tk.END, "Falana is not Dhikana.\n")
 
