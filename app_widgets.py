@@ -4,45 +4,18 @@ from functools import partial
 
 from custom_widgets.advanced_text import AdvancedText
 
-txt_chatbox = None
 txt_conv = None
 vsb_conv = None
-vsb_chatbox = None
-chatbox_shift_pressed = 0
 
 ### === Widget Event Handlers === ###
 
-def send_msg(caller=None, event=None, txt_conv=None, txt_chatbox=None):
+def send_msg(caller, txt_conv):
     user_msg = caller.txt.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
 
     return "break"
-
-def chatbox_select_all(event):
-    txt_chatbox.tag_add(tk.SEL, "1.0", tk.END)
-    return "break"
-
-def chatbox_key_release(vsb_chatbox, txt_chatbox, event=None):
-    vsb_visibility(vsb_chatbox, txt_chatbox)
-
-def set_chatbox_shift_pressed(value):
-    global chatbox_shift_pressed
-    chatbox_shift_pressed = value
-
-def chatbox_handle_return(event):
-    global chatbox_shift_pressed
-    if(chatbox_shift_pressed):
-        event.widget.insert(tk.INSERT, "\n")
-    else:
-        send_msg()
-
-    return "break"
-
-def handle_tab(event):
-    event.widget.tk_focusNext().focus()
-    return "break"  # Prevent default tab behavior
 
 def vsb_visibility(vsb_widget, txt_widget, event=None):
     xview = txt_widget.xview()
@@ -124,7 +97,7 @@ def create_widgets(root):
         frame_chat,
         default="Hello, this is some text.", 
         enter_callback=send_msg,
-        callback_args=(None, txt_conv), 
+        callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple
         enter_clear=True
     )
     chatbox_adtxt.grid(row=1, column=0, columnspan=3, padx=6, pady=8)

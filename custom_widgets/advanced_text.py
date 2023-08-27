@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 class AdvancedText(tk.Frame):
-    def __init__(self, parent, default="", height = 3, enter_callback=None, callback_args=None, enter_clear=False):
+    def __init__(self, parent, default="", height = 3, enter_callback=None, callback_args=(), enter_clear=False):
         tk.Frame.__init__(self, parent)
 
         self.shift_pressed = False
