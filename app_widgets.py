@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from functools import partial
 
 from custom_widgets.advanced_text import AdvancedText
 
@@ -95,18 +94,17 @@ def create_widgets(root):
     # Testing Advanced Text custom widget
     chatbox_adtxt = AdvancedText(
         frame_chat,
-        default="Hello, this is some text.", 
+        placeholder="Type your message here... \nHit <Enter> to send, and <Shift-Enter> for new line.", 
         enter_callback=send_msg,
-        callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple
+        callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple because callback_args is handles as a tuple in Advanced Text widget
         enter_clear=True
     )
     chatbox_adtxt.grid(row=1, column=0, columnspan=3, padx=6, pady=8)
 
-    chatbox_adtxt.insert(tk.END, "Falana is not Dhikana.\n")
-
-    chatbox_adtxt_TW = chatbox_adtxt.get_text_widget()
-    chatbox_adtxt_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    chatbox_adtxt.insert(tk.INSERT, bot_name, "bold")
+    #chatbox_adtxt.insert(tk.END, "Falana is not Dhikana.\n")
+    #chatbox_adtxt_TW = chatbox_adtxt.get_text_widget()
+    #chatbox_adtxt_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
+    #chatbox_adtxt.insert(tk.INSERT, bot_name, "bold")
     
     frame_chat.grid(row=1, column=0, sticky="nsew")
 

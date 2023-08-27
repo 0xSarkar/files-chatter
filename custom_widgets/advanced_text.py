@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 class AdvancedText(tk.Frame):
-    def __init__(self, parent, default="", height = 3, enter_callback=None, callback_args=(), enter_clear=False):
+    def __init__(self, parent, placeholder="", height = 3, enter_callback=None, callback_args=(), enter_clear=False):
         tk.Frame.__init__(self, parent)
 
         self.shift_pressed = False
@@ -29,7 +29,7 @@ class AdvancedText(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
 
-        self.txt.insert("1.0", default)
+        self.txt.insert("1.0", placeholder)
 
         self.txt.bind("<Control-a>", self.chatbox_select_all)
         self.txt.bind("<Control-A>", self.chatbox_select_all)
