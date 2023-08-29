@@ -94,7 +94,7 @@ def create_widgets(root):
     # Testing Advanced Text custom widget
     chatbox_adtxt = AdvancedText(
         frame_chat,
-        placeholder="Type your message here... \nHit <Enter> to send, and <Shift-Enter> for new line.", 
+        placeholder="Type here... Hit <Enter> to send, and <Shift-Enter> for new line.", 
         enter_callback=send_msg,
         callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple because callback_args is handles as a tuple in Advanced Text widget
         enter_clear=True

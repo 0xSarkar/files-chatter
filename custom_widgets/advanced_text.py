@@ -9,6 +9,8 @@ class AdvancedText(tk.Frame):
         self.enter_callback = enter_callback
         self.callback_args = callback_args
         self.enter_clear = enter_clear
+        self.placeholder = placeholder
+        self.user_text = ""
 
         self.txt = tk.Text(
             self,
@@ -31,6 +33,9 @@ class AdvancedText(tk.Frame):
 
         self.txt.insert("1.0", placeholder)
 
+        self.txt.bind("<FocusIn>", self.handle_focusin)
+        self.txt.bind("<FocusOut>", self.handle_focusout)
+
         self.txt.bind("<Control-a>", self.chatbox_select_all)
         self.txt.bind("<Control-A>", self.chatbox_select_all)
         self.txt.bind("<Tab>", self.handle_tab)
@@ -40,14 +45,26 @@ class AdvancedText(tk.Frame):
         self.txt.bind("<Configure>", self.update_vsb_visibility) # we must update the scrollbar visibility when window size changes and hence Text's size changes. Also this line helps hiding the scrollbar with non-overflowing default text, not sure why.
 
         self.txt.bind("<Return>", self.handle_enter)
-        
+    
+    def handle_focusin(self, event):
+        if self.user_text == "":
+            self.txt.delete("1.0", tk.END)  # Clear all text, in this case placeholder text
+
+    def handle_focusout(self, event):
+        if self.user_text == "":
+            self.txt.insert("1.0", self.placeholder)  # Clear all text, in this case placeholder text
+
     def handle_keypress(self, event):
         if event.keysym == "Shift_R" or event.keysym == "Shift_L":
             self.shift_pressed = True
+        if event.keysym != "Return":
+            self.user_text = self.txt.get("1.0", tk.END)
 
     def handle_keyrelease(self, event):
         if event.keysym == "Shift_R" or event.keysym == "Shift_L":
             self.shift_pressed = False
+        if event.keysym != "Return":
+            self.user_text = self.txt.get("1.0", tk.END)
         self.update_vsb_visibility()
     
     def handle_tab(self, event):
@@ -60,15 +77,17 @@ class AdvancedText(tk.Frame):
             if(self.shift_pressed):
                 # insert new line on shift+enter
                 self.insert(tk.INSERT, "\n")
+                self.user_text += "\n"
             else:
                 # call the callback if just enter
                 self.enter_callback(self, *self.callback_args) if self.callback_args else self.enter_callback(self)
                     
         if self.enter_clear and not self.shift_pressed:
             self.txt.delete("1.0", tk.END)  # Clear all text
+            self.user_text = ""
 
         if self.enter_callback is None and not self.enter_clear:
-            # if there's no call back nor instruction to clear the Text, return normal behavior
+            # if there's no callback nor instruction to clear the Text, return normal behavior
             return
         
         return "break" # prevent default behavior on Enter
@@ -85,6 +104,7 @@ class AdvancedText(tk.Frame):
     
     def insert(self, index, chars, *args):
         self.txt.insert(index, chars, *args)
+        self.user_text = self.txt.get("1.0", tk.END)
         self.after(5, self.update_vsb_visibility) # a 5 ms delay is needed so that the Text's view is updated after the insert
 
     def update_vsb_visibility(self, event=None):
