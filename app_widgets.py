@@ -11,7 +11,12 @@ vsb_conv = None
 def send_msg(caller, txt_conv):
     user_msg = caller.txt.get("1.0", tk.END)
     txt_conv.config(state=tk.NORMAL)
+
+    txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
+    txt_conv.insert(tk.INSERT, "\nUser:\n", "bold")
+    
     txt_conv.insert(tk.END, user_msg)
+
     txt_conv.config(state=tk.DISABLED)
 
     return "break"
@@ -52,17 +57,13 @@ def create_widgets(root):
     txt_conv_font = ("Arial", 12)
     txt_conv.configure(font=txt_conv_font)
 
-    first_bot_msg = """Hi! 
-- You can add new files to this chat by clicking on Files -> Add Files menu placed at the top left corner.
-- You can start a new chat by clicking on Chats -> New Chat
-- Type your messages in the text box at the bottom. Hit enter to send message or shift+enter to add a new line to your message.
+    first_bot_msg = """Hi, I'm Files Chatter Bot! 
+- Add new files by clicking on Files -> Add Files menu.
+- Start a new chat by clicking on Chats -> New Chat
 """
 
-    bot_name = "Bot:\n"
-    user_name = "User:\n"
-
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    txt_conv.insert(tk.INSERT, bot_name, "bold")
+    txt_conv.insert(tk.INSERT, "Bot:\n", "bold")
     txt_conv.insert(tk.INSERT, first_bot_msg)
 
     global vsb_conv
