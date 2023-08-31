@@ -76,8 +76,10 @@ class AdvancedText(tk.Frame):
             # if a callback is provided, then check if its shift+enter or only enter
             if(self.shift_pressed):
                 # insert new line on shift+enter
-                self.insert(tk.INSERT, "\n")
+                self.txt.insert(tk.INSERT, "\n")
+                curr_index = self.txt.index(tk.CURRENT)
                 self.user_text += "\n"
+                self.txt.yview_moveto(curr_index)
             else:
                 # call the callback if just enter
                 self.enter_callback(self, *self.callback_args) if self.callback_args else self.enter_callback(self)
