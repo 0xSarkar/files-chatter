@@ -80,44 +80,27 @@ def create_widgets(root):
         inactiveselectbackground="lightblue",
     )
 
-    frame_conv.grid(row=0, column=0, sticky="nsew")
-
     # Conversation frame grid configuration
     frame_conv.grid_columnconfigure(0, weight=1)
     frame_conv.grid_columnconfigure(1, weight=0)
     frame_conv.grid_rowconfigure(0, weight=1)
 
+    frame_conv.grid(row=0, column=0, sticky="nsew")
 
-    ### === Chatbox Widgets === ###
-
-    frame_chat = ttk.Frame(root)
-
-    # Testing Advanced Text custom widget
+    # Chatbox using Advanced Text custom widget
     chatbox_adtxt = AdvancedText(
-        frame_chat,
+        root,
         placeholder="Type here... Hit <Enter> to send, and <Shift-Enter> for new line.", 
         enter_callback=send_msg,
         callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple because callback_args is handles as a tuple in Advanced Text widget
         enter_clear=True
     )
-    chatbox_adtxt.grid(row=1, column=0, columnspan=3, padx=6, pady=8)
-
-    #chatbox_adtxt.insert(tk.END, "Falana is not Dhikana.\n")
-    #chatbox_adtxt_TW = chatbox_adtxt.get_text_widget()
-    #chatbox_adtxt_TW.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    #chatbox_adtxt.insert(tk.INSERT, bot_name, "bold")
-    
-    frame_chat.grid(row=1, column=0, sticky="nsew")
-
-
-    # Chat frame grid configuration
-    frame_chat.grid_columnconfigure(0, weight=1)
-    frame_chat.grid_rowconfigure(0, weight=0)
+    chatbox_adtxt.grid(row=1, column=0, padx=6, pady=8, sticky="nsew")
 
 
     ### === Root Grid Configuration === ###
 
-    # Set column weights to make them resize proportionally
+    # Make the Conv area take up max space, and chatbox take up as much as it needs
     root.grid_columnconfigure(0, weight=1)
     root.grid_rowconfigure(0, weight=1)
     root.grid_rowconfigure(1, weight=0)
