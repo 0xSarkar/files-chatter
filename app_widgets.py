@@ -13,14 +13,15 @@ vsb_conv = None
 def send_msg(caller, txt_conv):
     user_msg = caller.txt.get("1.0", tk.END)
 
-    caller.after(100, lambda: caller.txt.delete("1.0", tk.END))
-
     txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
     txt_conv.insert(tk.INSERT, "\nUser:\n", "bold")
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
 
+    caller.txt.delete("1.0", tk.END) # clear the chatbox
+    caller.update_idletasks() # force GUI to update before calling the infer() function else text will be deleted from chatbox AFTER infer function completes
+    
     llm_resp = infer(user_msg)
 
     txt_conv.config(state=tk.NORMAL)
