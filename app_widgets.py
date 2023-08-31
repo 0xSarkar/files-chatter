@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+import time
 
 from custom_widgets.advanced_text import AdvancedText
+from inference import infer
 
 txt_conv = None
 vsb_conv = None
@@ -10,13 +12,21 @@ vsb_conv = None
 
 def send_msg(caller, txt_conv):
     user_msg = caller.txt.get("1.0", tk.END)
-    txt_conv.config(state=tk.NORMAL)
 
+    caller.after(100, lambda: caller.txt.delete("1.0", tk.END))
+
+    txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
     txt_conv.insert(tk.INSERT, "\nUser:\n", "bold")
-    
     txt_conv.insert(tk.END, user_msg)
+    txt_conv.config(state=tk.DISABLED)
 
+    llm_resp = infer(user_msg)
+
+    txt_conv.config(state=tk.NORMAL)
+    txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
+    txt_conv.insert(tk.INSERT, "\nBot:\n", "bold")
+    txt_conv.insert(tk.END, llm_resp)
     txt_conv.config(state=tk.DISABLED)
 
     return "break"
@@ -92,8 +102,7 @@ def create_widgets(root):
         root,
         placeholder="Type here... Hit <Enter> to send, and <Shift-Enter> for new line.", 
         enter_callback=send_msg,
-        callback_args=(txt_conv,), # the extra coma is for creating a single-item tuple because callback_args is handles as a tuple in Advanced Text widget
-        enter_clear=True
+        callback_args=(txt_conv,) # the extra coma is for creating a single-item tuple
     )
     chatbox_adtxt.grid(row=1, column=0, padx=6, pady=8, sticky="nsew")
 

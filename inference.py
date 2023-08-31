@@ -1,60 +1,55 @@
 import ctranslate2
 import transformers
 
-print("Loading Fastchat CT2 model...")
-
 llm_model = "../llm-models/fastchat-t5-3b-ct2"
-translator = ctranslate2.Translator(
-  llm_model, 
-  device="cpu", 
-  compute_type="int8"
-)
-tokenizer = transformers.AutoTokenizer.from_pretrained(llm_model)
+translator = None
+tokenizer = None
 
-input_text = """
-Text:
-Large Language Models (LLMs) are trained on massive amounts of text data. As a result, they can generate coherent and fluent text. LLMs perform well on various natural languages processing tasks, such as language translation, text summarization, and conversational agents. LLMs perform so well because they are pre-trained on a large corpus of text data and can be fine-tuned for specific tasks. GPT is an example of a Large Language Model. These models are called 'large' because they have billions of parameters that shape their responses. For instance, GPT-3, the largest version of GPT, has 175 billion parameters and was trained on a massive corpus of text data.
+def load_llm_model(thread_event=None):
 
-Query: What are the key points of this text in 30 words?
-"""
+    print("Loading Fastchat CT2 model...")
 
-#input_text = "The purpose of life is "
-input_tokens = tokenizer.convert_ids_to_tokens(tokenizer.encode(input_text))
+    global llm_model, translator, tokenizer
+    translator = ctranslate2.Translator(
+      llm_model, 
+      device="cpu", 
+      compute_type="int8"
+    )
+    tokenizer = transformers.AutoTokenizer.from_pretrained(llm_model)
 
-print("Generating tokens...")
+    print("Model loaded.")
 
-step_results = translator.generate_tokens(
-  input_tokens,
-  sampling_temperature=0.8,
-  sampling_topk=20,
-  max_decoding_length=512,
-)
+def infer(msg: str):
 
-print("Running inference...")
+  global llm_model, translator, tokenizer
+  
+  input_tokens = tokenizer.convert_ids_to_tokens(tokenizer.encode(msg))
 
-for step_result in step_results:
-  #print(step_result)
-  is_new_word = step_result.token.startswith("▁")
-  word = tokenizer.decode(tokenizer.convert_tokens_to_ids(step_result.token))
-  if is_new_word:
-    print(f' {word}', end="", flush=True)
-  elif (word == "</s>"):
-    print("\n\n", end="", flush=True)
-  else:
-    print(word, end="", flush=True)
+  print("Generating tokens of input text...")
 
-'''
-output_ids = []
-for step_result in step_results:
-  is_new_word = step_result.token.startswith("▁")
+  step_results = translator.generate_tokens(
+    input_tokens,
+    sampling_temperature=0.8,
+    sampling_topk=20,
+    max_decoding_length=512,
+  )
 
-  if is_new_word and output_ids:
+  print("Running inference...")
+
+  llm_resp = ""
+
+  for step_result in step_results:
+    #print(step_result)
+    is_new_word = step_result.token.startswith("▁")
     word = tokenizer.decode(tokenizer.convert_tokens_to_ids(step_result.token))
-    print(word, end=" ", flush=True)
-    output_ids = []
-
-  output_ids.append(step_result.token)
-
-if output_ids:
-  word = tokenizer.decode(tokenizer.convert_tokens_to_ids(output_ids))
-  print(word)'''
+    if is_new_word:
+      print(f' {word}', end="", flush=True)
+      llm_resp += f' {word}'
+    elif (word == "</s>"):
+      print("\n", end="", flush=True)
+      llm_resp += "\n"
+    else:
+      print(word, end="", flush=True)
+      llm_resp += word
+  
+  return llm_resp
