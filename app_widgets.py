@@ -3,7 +3,7 @@ from tkinter import ttk
 import time
 
 from custom_widgets.advanced_text import AdvancedText
-from inference import infer
+from inference_ggml import infer
 
 txt_conv = None
 vsb_conv = None

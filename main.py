@@ -5,7 +5,7 @@ import threading
 
 from app_menus import create_menu
 from app_widgets import create_widgets
-from inference import load_llm_model
+from inference_ggml import load_llm_model
 
 def main():
     ### === Root Window === ###
