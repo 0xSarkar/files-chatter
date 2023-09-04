@@ -12,7 +12,7 @@ def load_llm_model(thread_event=None):
 def infer(user_msg: str):
   global llm
 
-  sys_prompt = "You are an AI bot."
+  sys_prompt = "You are an AI bot. Don't greet or apologize to user. Give straight-forward response to what the user says."
   final_prompt = f"""<s>[INST] <<SYS>>\n{sys_prompt}\n<</SYS>>\n\n{user_msg} [/INST]"""
 
   print("Running inference...")
