@@ -11,9 +11,14 @@ def load_llm_model(thread_event=None):
 
 def infer(msg: str):
   global llm
+
+  msg_prompt = f"[INST]<<SYS>>You're an helpful A.I. chatbot.<</SYS>>{msg}[/INST]"
+
   print("Running inference...")
   llm_resp = ""
-  for text in llm(msg, stream=True):
+  print(f'Prompt: {msg_prompt}')
+  print("Response:")
+  for text in llm(msg_prompt, stream=True):
     print(text, end="", flush=True)
     llm_resp += text
   print("\n")
