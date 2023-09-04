@@ -9,16 +9,17 @@ def load_llm_model(thread_event=None):
   llm = AutoModelForCausalLM.from_pretrained(llm_model, model_type="llama")
   print("Model loaded.")
 
-def infer(msg: str):
+def infer(user_msg: str):
   global llm
 
-  msg_prompt = f"[INST]<<SYS>>You're an helpful A.I. chatbot.<</SYS>>{msg}[/INST]"
+  sys_prompt = "You are an AI bot."
+  final_prompt = f"""<s>[INST] <<SYS>>\n{sys_prompt}\n<</SYS>>\n\n{user_msg} [/INST]"""
 
   print("Running inference...")
   llm_resp = ""
-  print(f'Prompt: {msg_prompt}')
+  print(f'Prompt: {final_prompt}')
   print("Response:")
-  for text in llm(msg_prompt, stream=True):
+  for text in llm(final_prompt, stream=True):
     print(text, end="", flush=True)
     llm_resp += text
   print("\n")
