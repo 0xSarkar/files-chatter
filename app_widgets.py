@@ -15,7 +15,7 @@ def send_msg(caller, txt_conv):
 
     txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    txt_conv.insert(tk.END, "\nUser:\n", "bold")
+    txt_conv.insert(tk.END, "\n\nUser:\n", "bold")
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
 
@@ -26,7 +26,7 @@ def send_msg(caller, txt_conv):
 
     txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    txt_conv.insert(tk.INSERT, "\nBot:\n", "bold")
+    txt_conv.insert(tk.END, "\nBot:\n", "bold")
     txt_conv.insert(tk.END, llm_resp)
     txt_conv.config(state=tk.DISABLED)
 
@@ -70,8 +70,7 @@ def create_widgets(root):
 
     first_bot_msg = """Hi, I'm Files Chatter Bot! 
 - Add new files by clicking on Files -> Add Files menu.
-- Start a new chat by clicking on Chats -> New Chat
-"""
+- Start a new chat by clicking on Chats -> New Chat"""
 
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
     txt_conv.insert(tk.INSERT, "Bot:\n", "bold")
