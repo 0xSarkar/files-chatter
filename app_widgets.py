@@ -15,7 +15,7 @@ def send_msg(caller, txt_conv):
 
     txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    txt_conv.insert(tk.INSERT, "\nUser:\n", "bold")
+    txt_conv.insert(tk.END, "\nUser:\n", "bold")
     txt_conv.insert(tk.END, user_msg)
     txt_conv.config(state=tk.DISABLED)
 
