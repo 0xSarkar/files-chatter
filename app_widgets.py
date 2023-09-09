@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-import time
 
 from custom_widgets.advanced_text import AdvancedText
 from inference_ggml import infer
@@ -21,14 +20,8 @@ def send_msg(caller, txt_conv):
 
     caller.txt.delete("1.0", tk.END) # clear the chatbox
     caller.update_idletasks() # force GUI to update before calling the infer() function else text will be deleted from chatbox AFTER infer function completes
-    
-    llm_resp = infer(user_msg).strip()
 
-    txt_conv.config(state=tk.NORMAL)
-    txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
-    txt_conv.insert(tk.END, "\nBot:\n", "bold")
-    txt_conv.insert(tk.END, llm_resp)
-    txt_conv.config(state=tk.DISABLED)
+    llm_resp = infer(user_msg, txt_conv)
 
     return "break"
 
