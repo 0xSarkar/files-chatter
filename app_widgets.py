@@ -22,7 +22,7 @@ def send_msg(caller, txt_conv):
     caller.txt.delete("1.0", tk.END) # clear the chatbox
     caller.update_idletasks() # force GUI to update before calling the infer() function else text will be deleted from chatbox AFTER infer function completes
     
-    llm_resp = infer(user_msg)
+    llm_resp = infer(user_msg).strip()
 
     txt_conv.config(state=tk.NORMAL)
     txt_conv.tag_configure("bold", font=("Helvetica", 12, "bold"))
